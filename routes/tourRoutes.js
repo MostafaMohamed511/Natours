@@ -10,6 +10,11 @@ const router = express.Router();
 //     });
 //   next();
 // });
+router.route('/stats').get(tourController.getTourStats);
+router.route('/plans/:year').get(tourController.getMonthlyPlan);
+router
+  .route('/top-5')
+  .get(tourController.getCheapestFive, tourController.getAllTours);
 router.route('/').get(tourController.getAllTours).post(tourController.addTour);
 router
   .route('/:id')

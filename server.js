@@ -18,14 +18,29 @@ mongoose
   .then((conObj) => {
     // console.log(conObj.connections);
     console.log('DB connected successfully');
-  })
-  .catch((err) => {
-    console.log('ERROOOOOR in DB connection');
-    // console.log(err);
   });
+
 // console.log(process.env.NODE_ENV);
 
 const portNum = 3000;
-app.listen(portNum, () => {
+const server = app.listen(portNum, () => {
   console.log('listing...');
+});
+
+process.on('unhandledRejection', (err) => {
+  console.log('unhandled Rejection');
+  console.log(err.name);
+  console.log(err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+process.on('uncaughtException', (err) => {
+  console.log('uncaught Exception');
+  console.log(err.name);
+  console.log(err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });

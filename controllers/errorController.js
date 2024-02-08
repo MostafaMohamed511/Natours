@@ -17,6 +17,10 @@ const handelDuplicateValueDB = (err) => {
   const message = `Duplicate field value(s) : ${prop} , please use another value(s) `;
   return new AppError(message, 400);
 };
+const handelJWTError = (err) =>
+  new AppError('Invalid Token, please log in again!', 401);
+const handelJWTExpiredError = (err) =>
+  new AppError('Your Token has Expired, please log in again!', 401);
 
 const sendDevError = (err, res) => {
   res.status(err.statusCode).json({
@@ -58,7 +62,10 @@ module.exports = (err, req, res, next) => {
     if (error.code === 11000) error = handelDuplicateValueDB(error);
     if (error._message === 'Validation failed')
       error = handelValidatorErrorDB(error);
-
+    if (error.name === 'JsonWebTokenError') error = handelJWTError(error);
+    if (error.name === 'TokenExpiredError')
+      error = handelJWTExpiredError(error);
+    console.log('error', error);
     sendProdError(error, res);
   }
 };
